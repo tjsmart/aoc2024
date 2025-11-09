@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+
+import os
+import subprocess
+from argparse import ArgumentParser
+from collections.abc import Sequence
+from pathlib import Path
+from typing import Literal
+
+THIS_DIR = Path(__file__).parent.resolve()
+BUILD_DIR = THIS_DIR / "build"
+
+Build = Literal["debug", "release"]
+
+
+def run(args: Sequence[str | Path]) -> None:
+    result = subprocess.run(
+        args,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise SystemExit(result.stderr)
+
+
+def main() -> None:
+    parser = ArgumentParser()
+    parser.add_argument(
+        "-e",
+        "--example",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--build",
+        default="debug",
+        choices=Build.__args__,  # type: ignore
+    )
+    parser.add_argument(
+        "--gdb",
+        action="store_true",
+    )
+    args = parser.parse_args()
+
+    build: Build = args.build
+    gdb: bool = args.gdb
+    inpfile = "example.txt" if args.example else "input.txt"
+
+    target_dir = BUILD_DIR / build
+    run(
+        [
+            "cmake",
+            "-S",
+            THIS_DIR,
+            "-B",
+            target_dir,
+            f"-DCMAKE_BUILD_TYPE={build.capitalize()}",
+        ]
+    )
+    run(["cmake", "--build", target_dir])
+
+    dps = sorted(Path(".").glob("day[0-9][0-9]/part[1,2]"))
+    try:
+        latest_dp = dps[-1]
+    except IndexError:
+        raise SystemExit("No daypart solutions found")
+
+    selected_dps = [f"{dp} {dp.parent / inpfile}" for dp in [latest_dp]]
+    if gdb:
+        selected_dps = [f"gdb --args {dp}" for dp in selected_dps]
+
+    os.execv("/bin/bash", ["bash", "-c", " && ".join(selected_dps)])
+
+
+if __name__ == "__main__":
+    main()
