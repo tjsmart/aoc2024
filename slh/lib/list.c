@@ -31,6 +31,19 @@ void slh_list_prepend(slh_node_t **node, int32_t value) {
     *node = first;
 }
 
+void slh_list_insert(slh_node_t **node, int32_t value) {
+    slh_node_t *next = slh_list_create_node(value);
+
+    if (*node == NULL) {
+        // list is empty 'insert' single node
+        *node = next;
+        return;
+    }
+
+    next->next = (*node)->next;
+    (*node)->next = next;
+}
+
 void slh_list_append(slh_node_t **node, int32_t value) {
     slh_node_t *next = slh_list_create_node(value);
 

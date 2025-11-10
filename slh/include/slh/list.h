@@ -15,6 +15,8 @@ slh_node_t *slh_list_end(slh_node_t *node);
 
 void slh_list_prepend(slh_node_t **node, int32_t value);
 
+void slh_list_insert(slh_node_t **node, int32_t value);
+
 void slh_list_append(slh_node_t **node, int32_t value);
 
 void slh_list_free(slh_node_t *node);
