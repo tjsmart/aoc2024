@@ -1,5 +1,6 @@
 #include "slh/slh.h"
 #include "input.h"
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -9,6 +10,19 @@ slh_solution_t slh_solution_err(char *err) {
 
 slh_solution_t slh_solution_answer(int64_t answer) {
     return (slh_solution_t){.err = NULL, .answer = answer};
+}
+
+void slh_panic(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    // Print the message to stderr
+    fprintf(stderr, "error: ");
+    vfprintf(stderr, fmt, args);
+    fprintf(stderr, "\n");
+
+    va_end(args);
+    exit(1);
 }
 
 int slh_main(int argc, char *argv[],

@@ -12,6 +12,9 @@ typedef struct {
 slh_solution_t slh_solution_err(char *err);
 slh_solution_t slh_solution_answer(int64_t answer);
 
+[[noreturn]] [[gnu::format(printf, 1, 2)]]
+void slh_panic(const char *fmt, ...);
+
 int slh_main(int argc, char *argv[],
              slh_solution_t (*solution)(const slh_sized_ptr_t *));
 
