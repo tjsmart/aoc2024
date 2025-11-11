@@ -5,3 +5,10 @@ set_target_properties(
 	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	OUTPUT_NAME part1
 )
+add_executable(day06_part2 part2.c)
+target_link_libraries(day06_part2 PRIVATE slh)
+set_target_properties(
+	day06_part2 PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	OUTPUT_NAME part2
+)
